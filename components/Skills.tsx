@@ -5,29 +5,29 @@ import { motion } from "framer-motion";
 const skills = [
     {
         category: "Languages",
-        items: ["Python", "Java", "C/C++", "SQL", "HTML/CSS", "JavaScript", "TypeScript"],
+        items: ["Python", "Java", "TypeScript", "JavaScript", "Swift", "C/C++", "SQL"],
     },
     {
-        category: "Frameworks & Tools",
-        items: ["TensorFlow", "Keras", "Scikit-learn", "HuggingFace", "Next.js", "React", "Node.js"],
+        category: "AI & Agents",
+        items: ["FastAPI", "MCP", "Groq", "ChromaDB", "TensorFlow", "HuggingFace", "LangChain"],
     },
     {
-        category: "Platforms",
-        items: ["Firebase", "Google Cloud", "DigitalOcean", "Render", "Railway", "Vercel"],
+        category: "Backend & Databases",
+        items: ["Spring Boot 3", "Node.js", "WebSocket/STOMP", "PostgreSQL", "Redis", "SQLite"],
     },
     {
-        category: "DevOps",
-        items: ["Git", "Docker", "Postman", "Linux"],
+        category: "Frontend",
+        items: ["React", "Next.js", "Electron", "Monaco Editor"],
     },
     {
-        category: "Libraries",
-        items: ["Pandas", "NumPy", "Seaborn", "Matplotlib"],
+        category: "DevOps & Cloud",
+        items: ["Docker", "AWS", "Git", "Google Cloud", "Vercel", "Render", "Linux"],
     },
 ];
 
 export default function Skills() {
     return (
-        <section id="skills" className="py-24 bg-bg-mint/30">
+        <section id="skills" className="py-24 bg-bg-surface">
             <div className="container-custom">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -35,28 +35,35 @@ export default function Skills() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
                 >
+                    <div className="font-mono text-xs text-accent mb-3 opacity-70">// skills.json</div>
                     <h2 className="text-3xl font-bold mb-12 text-text-primary">Skills</h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        {skills.map((skillGroup, index) => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        {skills.map((group, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                transition={{ duration: 0.5, delay: index * 0.08 }}
+                                className="bg-bg-card border border-border rounded-xl p-6 hover:border-border-muted transition-colors"
                             >
-                                <h3 className="text-lg font-semibold text-text-primary mb-4 border-b border-gray-200 pb-2">
-                                    {skillGroup.category}
+                                <h3 className="font-mono text-xs text-accent uppercase tracking-widest mb-4 opacity-80">
+                                    {group.category}
                                 </h3>
                                 <div className="flex flex-wrap gap-2">
-                                    {skillGroup.items.map((item, i) => (
-                                        <span
+                                    {group.items.map((item, i) => (
+                                        <motion.span
                                             key={i}
-                                            className="px-4 py-2 bg-white text-text-secondary text-sm font-medium rounded-full border border-gray-100 shadow-sm hover:shadow-md hover:text-brand-blue transition-all cursor-default"
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            whileInView={{ opacity: 1, scale: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.3, delay: index * 0.05 + i * 0.04 }}
+                                            whileHover={{ scale: 1.05 }}
+                                            className="px-3 py-1.5 bg-bg-elevated text-text-secondary text-xs font-mono rounded-md border border-border hover:border-accent/30 hover:text-accent transition-all cursor-default"
                                         >
                                             {item}
-                                        </span>
+                                        </motion.span>
                                     ))}
                                 </div>
                             </motion.div>
