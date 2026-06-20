@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Syne, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono-var",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Shlok's Portfolio",
-  description: "Created by Shlok",
+  title: "Shlok Ghadekar — Software Engineer",
+  description: "Final year CS student at VIT building AI systems, real-time editors, and scalable backends.",
 };
 
 export default function RootLayout({
@@ -19,9 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} antialiased`}
-      >
+      <body className={`${syne.variable} ${jetbrainsMono.variable} antialiased`}>
         {children}
       </body>
     </html>
