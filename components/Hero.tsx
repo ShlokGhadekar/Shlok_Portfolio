@@ -6,22 +6,22 @@ import { ArrowRight, Download } from "lucide-react";
 import Link from "next/link";
 
 const roles = [
-  "AI Systems Engineer",
-  "Backend Developer",
-  "Full-Stack Builder",
+  "Software Engineer",
+  "Backend & Distributed Systems",
+  "Building Scalable Software",
   "Final Year @ VIT",
 ];
 
 const codeSnippets = [
   {
-    code: `async def semantic_search(query: str):\n    return await chromadb.find(query)`,
+    code: `executor.submit(() -> store.put(key, value));`,
     top: "12%",
     right: "3%",
     delay: 0.6,
     duration: 5,
   },
   {
-    code: `@mcp.tool()\ndef create_github_repo(name: str):\n    return gh.create(name)`,
+    code: `wal.append(Operation.PUT, key, value);\nstore.recover();`,
     top: "68%",
     left: "2%",
     delay: 1.2,
@@ -59,8 +59,10 @@ export default function Hero() {
     } else if (deleting && chars > 0) {
       timer = setTimeout(() => setChars((c) => c - 1), 38);
     } else if (deleting && chars === 0) {
-      setDeleting(false);
-      setRoleIdx((i) => (i + 1) % roles.length);
+      timer = setTimeout(() => {
+        setDeleting(false);
+        setRoleIdx((i) => (i + 1) % roles.length);
+      }, 0);
     }
 
     return () => clearTimeout(timer);
@@ -83,7 +85,7 @@ export default function Hero() {
         <motion.div
           key={i}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.22 }}
+          animate={{ opacity: 0.34 }}
           transition={{ duration: 1.5, delay: snippet.delay }}
           style={{
             top: snippet.top,
@@ -91,7 +93,7 @@ export default function Hero() {
             right: "right" in snippet ? snippet.right : undefined,
             animationDuration: `${snippet.duration}s`,
           }}
-          className="absolute hidden xl:block font-mono text-xs text-text-secondary whitespace-pre bg-bg-card/70 border border-border/50 rounded-lg px-4 py-3 backdrop-blur-sm pointer-events-none select-none float-animate"
+          className="absolute hidden xl:block font-mono text-xs text-text-secondary whitespace-pre bg-bg-card/80 border border-border-muted/60 rounded-xl px-4 py-3 backdrop-blur-sm pointer-events-none select-none float-animate shadow-lg shadow-black/10"
         >
           {snippet.code}
         </motion.div>
@@ -129,7 +131,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex items-center gap-2 mb-8 h-10"
           >
-            <span className="font-mono text-accent text-xl">//</span>
+            <span className="font-mono text-accent text-xl">{"//"}</span>
             <span className="font-mono text-xl text-text-secondary">
               {roles[roleIdx].slice(0, chars)}
             </span>
@@ -143,8 +145,8 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.45 }}
             className="text-lg text-text-secondary leading-relaxed mb-10 max-w-xl"
           >
-            Final year CS student at VIT building agentic AI systems, real-time
-            collaborative tools, and production-grade backend infrastructure.
+            Final-year Computer Science student at VIT building scalable backend systems,
+            distributed applications, and AI-powered software with a strong focus on engineering fundamentals.
           </motion.p>
 
           {/* CTAs */}
@@ -156,7 +158,7 @@ export default function Hero() {
           >
             <Link
               href="#projects"
-              className="inline-flex items-center justify-center px-7 py-3.5 bg-accent text-bg-primary font-semibold rounded-lg hover:bg-accent-hover transition-all transform hover:-translate-y-0.5 shadow-lg shadow-accent/20 text-sm glow-green"
+              className="inline-flex items-center justify-center px-7 py-3.5 bg-accent text-bg-primary font-semibold rounded-xl hover:bg-accent-hover transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-accent/20 text-sm glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary"
             >
               View Projects
               <ArrowRight className="ml-2 w-4 h-4" />
@@ -164,7 +166,7 @@ export default function Hero() {
             <Link
               href="https://drive.google.com/file/d/1YziHS98DvuKtK4QmI3usyxFMkSlzRnoU/view?usp=sharing"
               target="_blank"
-              className="inline-flex items-center justify-center px-7 py-3.5 bg-transparent border border-border text-text-primary font-semibold rounded-lg hover:bg-bg-elevated hover:border-border-muted transition-all transform hover:-translate-y-0.5 text-sm"
+              className="inline-flex items-center justify-center px-7 py-3.5 bg-transparent border border-border text-text-primary font-semibold rounded-xl hover:bg-bg-elevated hover:border-border-muted transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary"
             >
               View Resume
               <Download className="ml-2 w-4 h-4" />
@@ -180,8 +182,8 @@ export default function Hero() {
           >
             {[
               { value: "8.89", label: "CGPA" },
-              { value: "2+", label: "Major Projects" },
-              { value: "2", label: "Certifications" },
+              { value: "3", label: "Major Projects" },
+              { value: "AWS", label: "Certified" },
             ].map((stat, i) => (
               <div key={i}>
                 <p className="text-3xl font-bold text-text-primary font-mono">

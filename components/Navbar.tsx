@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
@@ -63,8 +63,10 @@ export default function Navbar() {
 
                 {/* Mobile toggle */}
                 <button
-                    className="md:hidden z-50 text-text-primary"
+                    className="md:hidden z-50 text-text-primary rounded-lg p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                    aria-expanded={isMobileMenuOpen}
                 >
                     {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
                 </button>

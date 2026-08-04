@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Shlok Ghadekar — Software Engineer",
-  description: "Final year CS student at VIT building AI systems, real-time editors, and scalable backends.",
+  description: "Final-year CS student at VIT building scalable backend systems, distributed applications, and AI-powered software.",
 };
 
 export default function RootLayout({
