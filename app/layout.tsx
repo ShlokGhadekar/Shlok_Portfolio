@@ -1,22 +1,27 @@
-import type { Metadata } from "next";
-import { Syne, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Literata, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const literata = Literata({
+  variable: "--font-literata",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  axes: ["opsz"],
+  style: ["normal", "italic"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono-var",
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
   subsets: ["latin"],
-  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Shlok Ghadekar — Software Engineer",
-  description: "Final-year CS student at VIT building scalable backend systems, distributed applications, and AI-powered software.",
+  title: "Shlok Ghadekar",
+  description:
+    "Software engineer building backend systems and ML pipelines. Final-year Computer Science at VIT.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#E6E9ED",
 };
 
 export default function RootLayout({
@@ -25,10 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${syne.variable} ${jetbrainsMono.variable} antialiased`}>
-        {children}
-      </body>
+    <html lang="en" className={`${literata.variable} ${hanken.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }
