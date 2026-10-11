@@ -17,7 +17,7 @@ const hanken = Hanken_Grotesk({
 export const metadata: Metadata = {
   title: "Shlok Ghadekar",
   description:
-    "Software engineer building backend systems and ML pipelines. Final-year Computer Science at VIT.",
+    "AI engineer building retrieval systems, agents, and the backend underneath them. Final-year Computer Science at VIT.",
 };
 
 export const viewport: Viewport = {

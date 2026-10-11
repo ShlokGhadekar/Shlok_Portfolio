@@ -14,8 +14,9 @@ export default function Background() {
             <p className="facts__lead">AI Engineering Intern, Bitlance Tech Hub</p>
             <p className="facts__meta">May to July 2025</p>
             <p>
-              Built a phone voice agent on GPT-4, Whisper and Google TTS that streams audio both ways over Twilio
-              WebSockets, and a pipeline that turns news into published WordPress posts without anyone touching it.
+              Built a phone voice agent on GPT-4, Whisper and Google TTS that holds a live conversation over Twilio
+              WebSockets, a sentiment-aware assistant workflow in n8n, and a pipeline that turns news into illustrated
+              WordPress posts with GPT-4 and DALL·E. Deployed on Google Cloud.
             </p>
           </dd>
         </div>
@@ -31,8 +32,12 @@ export default function Background() {
         <div className="facts__item">
           <dt>Certified</dt>
           <dd>
-            <p className="facts__lead">AWS Solutions Architect, Associate</p>
-            <p className="facts__lead">Oracle Java SE 17 Developer, Professional</p>
+            <p className="facts__lead">AWS Certified AI Practitioner</p>
+            <p className="facts__meta">AIF-C01</p>
+            <p className="facts__lead">AWS Certified Solutions Architect, Associate</p>
+            <p className="facts__meta">SAA-C03</p>
+            <p className="facts__lead">Oracle Certified Professional, Java SE 17 Developer</p>
+            <p className="facts__meta">1Z0-829</p>
           </dd>
         </div>
 
@@ -40,8 +45,9 @@ export default function Background() {
           <dt>Tools</dt>
           <dd>
             <p>
-              Mostly Java with Spring Boot and Python with FastAPI. PostgreSQL and Redis underneath, Docker and
-              Kubernetes to run it, PyTorch and LightGBM when there’s a model involved.
+              For AI work: Python, PyTorch, retrieval with BM25, embeddings and ChromaDB, MCP and tool-using agents, and
+              the Claude, OpenAI and Groq APIs. Underneath: FastAPI, Java with Spring Boot, PostgreSQL, Redis, Docker and
+              Kubernetes.
             </p>
           </dd>
         </div>

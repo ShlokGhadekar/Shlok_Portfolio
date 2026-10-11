@@ -1,3 +1,9 @@
+export type Figure =
+  | { type: "image"; src: string; width: number; height: number; alt: string; caption: string }
+  | { type: "bars"; title: string; rows: { label: string; value: number; picked?: boolean }[]; caption: string }
+  | { type: "dots"; title: string; min: number; max: number; rows: { label: string; value: number; picked?: boolean }[]; caption: string }
+  | { type: "steps"; command: string; steps: { tool: string; text: string }[]; caption: string };
+
 export type Project = {
   id: string;
   name: string;
@@ -8,16 +14,17 @@ export type Project = {
   note: { label: string; text: string };
   stack: string[];
   links: { label: string; href: string }[];
+  figure?: Figure;
 };
 
-export const projects: Project[] = [
+export const featured: Project[] = [
   {
     id: "repolens",
     name: "RepoLens",
     line: "Ask a codebase questions in plain English and get answers that cite exact files and lines.",
-    kind: "AI tooling",
+    kind: "Retrieval-augmented generation",
     about:
-      "Code is chunked by function with Python’s ast, then searched two ways at once: BM25 for exact identifiers and embeddings for meaning, merged with Reciprocal Rank Fusion. If retrieval comes back weak, it says it couldn’t find the answer instead of guessing, and any citation that doesn’t point at a retrieved chunk is dropped before you see it.",
+      "Code is chunked by function with Python’s ast, then searched two ways at once: BM25 for exact identifiers and embeddings for meaning, merged with Reciprocal Rank Fusion. Weak retrieval means no LLM call at all. The prompt demands a citation for every claim, and any citation that doesn’t point at a chunk the model was actually given is dropped before you see it.",
     results: [
       {
         value: "0.889",
@@ -26,16 +33,87 @@ export const projects: Project[] = [
     ],
     note: {
       label: "What didn’t work",
-      text: "A cross-encoder reranker made results worse (MRR 0.750). It was trained on prose, so it ranked the docs above the code that actually answered the question. It ships switched off.",
+      text: "Cross-encoder rerankers. They’re trained on prose, so they kept ranking the docs above the code that actually answered the question. The reranker is still in the code, switched off.",
     },
     stack: ["Python", "FastAPI", "ChromaDB", "sentence-transformers", "BM25", "Claude / Groq", "Streamlit"],
     links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/RepoLens" }],
+    figure: {
+      type: "bars",
+      title: "MRR@6 on the itsdangerous eval set",
+      rows: [
+        { label: "Hybrid, no reranker", value: 0.85, picked: true },
+        { label: "+ ms-marco-MiniLM", value: 0.799 },
+        { label: "+ mxbai-rerank-xsmall", value: 0.736 },
+        { label: "+ bge-reranker-base", value: 0.701 },
+      ],
+      caption: "Every reranker I tried made retrieval worse. Measured on 12 questions with the earlier 40-line chunks; the gap held after re-chunking.",
+    },
+  },
+  {
+    id: "auraos",
+    name: "AuraOS",
+    line: "A hotkey agent for macOS that remembers what you were working on and acts on it.",
+    kind: "Agents and MCP",
+    about:
+      "Type what you want in plain English. A planning agent breaks it into steps across five MCP servers (GitHub, files, Calendar through a native Swift bridge, a real browser, and memory) and shows the plan before running it. Memory has three tiers: in-process for the session, SQLite for what happened, and ChromaDB so “that NLP thing” still finds the right project. Anything that writes to the outside world waits behind a confirmation.",
+    results: [],
+    note: {
+      label: "What broke",
+      text: "Every server wrote to SQLite on its own connection, and concurrent workflow steps kept hitting “database is locked”. Instead of adding retries, I routed every write through a single memory server, and the errors stopped.",
+    },
+    stack: ["Python", "FastAPI", "MCP", "Groq", "SQLite", "ChromaDB", "Electron", "Swift", "Playwright"],
+    links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/AuraOS" }],
+    figure: {
+      type: "steps",
+      command: "create a new project called task-tracker",
+      steps: [
+        { tool: "GitHub", text: "Creates the GitHub repository" },
+        { tool: "Files", text: "Scaffolds a README, .gitignore and entry point" },
+        { tool: "Git", text: "Pushes the first commit, using the clone URL from the step before" },
+        { tool: "Memory", text: "Registers the project so later sessions can find it" },
+        { tool: "VS Code", text: "Opens it in VS Code" },
+      ],
+      caption: "One request, five steps. Workflows like this are YAML, so adding a new routine doesn’t touch the agent.",
+    },
+  },
+  {
+    id: "retentia",
+    name: "Retentia",
+    line: "Predicts which online-retail customers will stop buying, and explains why for each one.",
+    kind: "Deep learning",
+    about:
+      "The dataset (1.07M real transactions) has no churn label, so I defined one: no purchase in the three months after a cutoff, with every feature built only from data before it. I compared logistic regression, random forest and XGBoost against an MLP, a GRU over monthly purchase sequences, and a fusion of the two. Predictions are served through FastAPI with a SHAP explanation for each customer.",
+    results: [
+      { value: "0.811", text: "ROC-AUC on a test set touched exactly once, after every modelling choice was final." },
+      { value: "0.16", text: "decision threshold instead of 0.5, once a missed churner is costed at five times a wasted retention offer." },
+    ],
+    note: {
+      label: "What didn’t work",
+      text: "Fusing the MLP and the GRU didn’t beat either one on its own. Both read the same purchase history, just encoded differently, so the second branch added nothing new.",
+    },
+    stack: ["Python", "PyTorch", "XGBoost", "scikit-learn", "SHAP", "FastAPI", "Streamlit"],
+    links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/Retentia" }],
+    figure: {
+      type: "dots",
+      title: "Validation ROC-AUC",
+      min: 0.76,
+      max: 0.79,
+      rows: [
+        { label: "MLP", value: 0.787, picked: true },
+        { label: "MLP + GRU fusion", value: 0.785 },
+        { label: "Logistic regression", value: 0.781 },
+        { label: "GRU, sequences only", value: 0.778 },
+        { label: "Random forest", value: 0.776 },
+        { label: "XGBoost", value: 0.767 },
+      ],
+      caption: "Six models within 0.02 of each other. The fusion model landed between its two branches, so I shipped the simpler MLP.",
+    },
   },
   {
     id: "shelfwise",
     name: "ShelfWise",
     line: "Forecasts 28 days of sales for 30,490 Walmart products and turns them into order quantities.",
-    kind: "Data and ML",
+    kind: "Forecasting",
     about:
       "A Postgres warehouse (about 59M rows) handles cleaning, data-quality checks, incremental loads and feature engineering in SQL. A LightGBM model is backtested walk-forward over three folds and checked for significance. A newsvendor rule turns each forecast into an order, and a simulation prices those orders against naive ordering.",
     results: [
@@ -44,11 +122,22 @@ export const projects: Project[] = [
     ],
     note: {
       label: "What didn’t work",
-      text: "Per item, the model beat a 28-day moving average by only 0.5%. That gap is statistically real (p = 5×10⁻⁶) but small. Its prediction intervals also came out too wide, so a much simpler quantile policy ordered slightly cheaper.",
+      text: "Per item, the model beat a 28-day moving average by only 0.5%. Statistically real, practically small. Its prediction intervals were also too wide, so a much simpler quantile policy ordered slightly cheaper.",
     },
     stack: ["Python", "PostgreSQL", "SQL", "LightGBM", "DuckDB", "FastAPI", "Streamlit", "Docker"],
     links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/ShelfWise" }],
+    figure: {
+      type: "image",
+      src: "/work/shelfwise.jpg",
+      width: 800,
+      height: 563,
+      alt: "ShelfWise dashboard showing an item's daily sales history and a 28-day forecast with a P10 to P90 band",
+      caption: "The dashboard: an item’s sales history, the 28-day forecast with its P10–P90 band, and the naive baseline it has to beat.",
+    },
   },
+];
+
+export const alsoBuilt: Project[] = [
   {
     id: "vaultik",
     name: "Vaultik",
@@ -58,7 +147,7 @@ export const projects: Project[] = [
       "Each secret version gets its own data key (AES-256-GCM envelope encryption), so rotating the master key re-encrypts 32 bytes per secret instead of the data. Services can only read the paths their policy allows. Pods log in with the service account token Kubernetes already gives them, so there’s no bootstrap password to hand out. Every read lands in a hash-chained, append-only audit log.",
     results: [
       { value: "0 of 56,334", text: "requests failed from 40 services under load, at 17 ms p99, while the cluster scaled from 3 to 6 replicas." },
-      { value: "1,598", text: "requests let through to a client firing 300 per second, which is exactly what its rate limit allows. Everyone else saw no errors." },
+      { value: "1,598", text: "requests let through to a client firing 300 a second, exactly what its rate limit allows. Everyone else saw no errors." },
     ],
     note: {
       label: "Before this",
@@ -68,43 +157,10 @@ export const projects: Project[] = [
     links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/Vaultik" }],
   },
   {
-    id: "retentia",
-    name: "Retentia",
-    line: "Predicts which online-retail customers will stop buying, and explains why for each one.",
-    kind: "ML",
-    about:
-      "The dataset (1.07M real transactions) has no churn label, so I defined one: no purchase in the three months after a cutoff, with every feature built only from data before it. I compared logistic regression, random forest and XGBoost against an MLP, a GRU over monthly purchase sequences, and a fusion of the two. Predictions are served through FastAPI with SHAP explanations for each customer.",
-    results: [
-      { value: "0.811", text: "ROC-AUC on a test set that was touched exactly once, after every modelling choice was final." },
-      { value: "0.16", text: "decision threshold, not 0.5, once a missed churner is costed at five times a wasted retention offer." },
-    ],
-    note: {
-      label: "What didn’t work",
-      text: "Fusing the MLP and the GRU didn’t beat either one on its own. Both were reading the same purchase history, just encoded differently, so the second branch added nothing new.",
-    },
-    stack: ["Python", "PyTorch", "XGBoost", "scikit-learn", "SHAP", "FastAPI", "Streamlit"],
-    links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/Retentia" }],
-  },
-  {
-    id: "auraos",
-    name: "AuraOS",
-    line: "A hotkey agent for macOS that remembers what you were working on.",
-    kind: "AI tooling",
-    about:
-      "Type what you want in plain English. It plans a sequence of real actions across GitHub, your files, Calendar and a browser, and shows the plan before running it. Five MCP servers sit behind a planning agent. Session history lives in SQLite and semantic recall in ChromaDB, so “that NLP thing” finds the right project.",
-    results: [],
-    note: {
-      label: "What broke",
-      text: "Every server wrote to SQLite on its own connection, and concurrent workflow steps kept hitting “database is locked”. Instead of adding retries, I routed every write through a single memory server, and the errors stopped.",
-    },
-    stack: ["Python", "FastAPI", "MCP", "Groq", "SQLite", "ChromaDB", "Electron", "Swift", "Playwright"],
-    links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/AuraOS" }],
-  },
-  {
     id: "collabeditor",
     name: "CollabEditor",
     line: "A browser code editor where several people edit and run the same file together, live.",
-    kind: "Backend",
+    kind: "Real-time backend",
     about:
       "A Spring Boot WebSocket server checks a JWT on every STOMP frame, not just at connect. Redis Pub/Sub carries edits between server instances, so a room works no matter which instance you land on. The front end is Monaco with seven languages, and Java, Python and JavaScript run in the browser.",
     results: [],
@@ -117,5 +173,13 @@ export const projects: Project[] = [
       { label: "Live demo", href: "https://realtime-collab-editor-two.vercel.app" },
       { label: "Code", href: "https://github.com/ShlokGhadekar/realtime-collab-editor" },
     ],
+    figure: {
+      type: "image",
+      src: "/work/collabeditor.jpg",
+      width: 1600,
+      height: 777,
+      alt: "CollabEditor with two people editing the same Python file, one collaborator's cursor labelled",
+      caption: "Two people in one room. The labelled cursor is the other person.",
+    },
   },
 ];
