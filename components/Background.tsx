@@ -45,9 +45,9 @@ export default function Background() {
           <dt>Tools</dt>
           <dd>
             <p>
-              For AI work: Python, PyTorch, retrieval with BM25, embeddings and ChromaDB, MCP and tool-using agents, and
-              the Claude, OpenAI and Groq APIs. Underneath: FastAPI, Java with Spring Boot, PostgreSQL, Redis, Docker and
-              Kubernetes.
+              For AI work: Python and asyncio, multi-agent orchestration without a framework, retrieval with BM25,
+              embeddings and ChromaDB, MCP, evals, PyTorch, and the Claude, Gemini, OpenAI and Groq APIs. Underneath:
+              FastAPI, Java with Spring Boot, PostgreSQL, Redis, Docker and Kubernetes.
             </p>
           </dd>
         </div>

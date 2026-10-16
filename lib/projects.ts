@@ -1,8 +1,9 @@
 export type Figure =
+  | { type: "video"; src: string; poster: string; width: number; height: number; label: string; caption: string }
+  | { type: "pairs"; title: string; series: [string, string]; rows: { label: string; values: [number, number]; format: string }[]; caption: string }
   | { type: "image"; src: string; width: number; height: number; alt: string; caption: string }
   | { type: "bars"; title: string; rows: { label: string; value: number; picked?: boolean }[]; caption: string }
-  | { type: "dots"; title: string; min: number; max: number; rows: { label: string; value: number; picked?: boolean }[]; caption: string }
-  | { type: "steps"; command: string; steps: { tool: string; text: string }[]; caption: string };
+  | { type: "dots"; title: string; min: number; max: number; rows: { label: string; value: number; picked?: boolean }[]; caption: string };
 
 export type Project = {
   id: string;
@@ -19,12 +20,41 @@ export type Project = {
 
 export const featured: Project[] = [
   {
+    id: "agenthq",
+    name: "AgentHQ",
+    line: "A team of four AI agents that turns a goal for a GitHub repo into a tested change, then waits for a person before opening the pull request.",
+    kind: "Multi-agent systems",
+    about:
+      "A Manager splits the goal into tasks. A Researcher finds the relevant code through RepoLens, an Engineer makes the change in a sandboxed clone, and a Reviewer reads the diff and re-runs the tests itself before anything reaches a person. The orchestration is plain Python and asyncio, with no agent framework. Every event goes through one pipeline onto Redis Streams, so the live dashboard, step-by-step replay and eval metrics are all built from the same log. Step limits, a token cap, loop detection and pause or stop keep a run inside its budget.",
+    results: [
+      { value: "46 seconds", text: "and about 3 cents to get from “add rate limiting to /login” to a reviewed, tested change waiting for sign-off, on a real run." },
+      { value: "18% fewer tokens", text: "than a single agent with the same tools, across 10 eval tasks with hidden acceptance tests. Both solved all 10." },
+    ],
+    note: {
+      label: "What didn’t work",
+      text: "The team lost on the hardest task: the Reviewer sent the work back over a lint error, and the extra round cost 100k tokens. And since both setups solved everything, the eval doesn’t yet show a team succeeding where one agent fails. Harder tasks are next.",
+    },
+    stack: ["Python", "asyncio", "FastAPI", "Redis Streams", "PostgreSQL", "Docker", "React", "React Flow", "Gemini / Groq / Anthropic"],
+    links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/AgentHQ" }],
+    figure: {
+      type: "pairs",
+      title: "Four-agent team vs one agent, averaged over 10 tasks",
+      series: ["Team", "Single agent"],
+      rows: [
+        { label: "Tokens", values: [103, 126], format: "{}k" },
+        { label: "Cost", values: [0.033, 0.042], format: "${}" },
+        { label: "Time", values: [1.3, 1.8], format: "{} min" },
+      ],
+      caption: "Same runtime, tools, guardrails and token cap for both. Each agent on the team holds a short conversation about one task instead of one long one about everything.",
+    },
+  },
+  {
     id: "repolens",
     name: "RepoLens",
     line: "Ask a codebase questions in plain English and get answers that cite exact files and lines.",
     kind: "Retrieval-augmented generation",
     about:
-      "Code is chunked by function with Python’s ast, then searched two ways at once: BM25 for exact identifiers and embeddings for meaning, merged with Reciprocal Rank Fusion. Weak retrieval means no LLM call at all. The prompt demands a citation for every claim, and any citation that doesn’t point at a chunk the model was actually given is dropped before you see it.",
+      "Code is chunked by function with Python’s ast, then searched two ways at once: BM25 for exact identifiers and embeddings for meaning, merged with Reciprocal Rank Fusion. Weak retrieval means no LLM call at all. The prompt demands a citation for every claim, and any citation that doesn’t point at a chunk the model was actually given is dropped before you see it. It’s also the Researcher’s search tool inside AgentHQ.",
     results: [
       {
         value: "0.889",
@@ -64,16 +94,13 @@ export const featured: Project[] = [
     stack: ["Python", "FastAPI", "MCP", "Groq", "SQLite", "ChromaDB", "Electron", "Swift", "Playwright"],
     links: [{ label: "Code", href: "https://github.com/ShlokGhadekar/AuraOS" }],
     figure: {
-      type: "steps",
-      command: "create a new project called task-tracker",
-      steps: [
-        { tool: "GitHub", text: "Creates the GitHub repository" },
-        { tool: "Files", text: "Scaffolds a README, .gitignore and entry point" },
-        { tool: "Git", text: "Pushes the first commit, using the clone URL from the step before" },
-        { tool: "Memory", text: "Registers the project so later sessions can find it" },
-        { tool: "VS Code", text: "Opens it in VS Code" },
-      ],
-      caption: "One request, five steps. Workflows like this are YAML, so adding a new routine doesn’t touch the agent.",
+      type: "video",
+      src: "/work/auraos.mp4",
+      poster: "/work/auraos.jpg",
+      width: 1600,
+      height: 900,
+      label: "AuraOS demo video",
+      caption: "20-second demo. “Continue my auraos project” pulls up the last session’s next step and open issues, then opens the workspace.",
     },
   },
   {
@@ -109,6 +136,9 @@ export const featured: Project[] = [
       caption: "Six models within 0.02 of each other. The fusion model landed between its two branches, so I shipped the simpler MLP.",
     },
   },
+];
+
+export const alsoBuilt: Project[] = [
   {
     id: "shelfwise",
     name: "ShelfWise",
@@ -135,9 +165,6 @@ export const featured: Project[] = [
       caption: "The dashboard: an item’s sales history, the 28-day forecast with its P10–P90 band, and the naive baseline it has to beat.",
     },
   },
-];
-
-export const alsoBuilt: Project[] = [
   {
     id: "vaultik",
     name: "Vaultik",

@@ -6,22 +6,22 @@ export default function Hero() {
     <section className="hero" aria-labelledby="hero-title">
       <div className="hero__text">
         <h1 id="hero-title" className="hero__statement">
-          I build AI systems that know when they don’t know.
+          I build AI agents that check their own work and ask before they ship.
         </h1>
 
         <p className="hero__intro">
-          I’m an AI engineer working on retrieval, agents, and the backend underneath them. Lately that’s been a code
-          search tool that{" "}
-          <a href="#repolens" className="mark" style={{ "--i": 0 } as React.CSSProperties}>
-            says “not found” instead of guessing
+          I’m an AI engineer. My latest project, AgentHQ, is a team of four agents that took a goal to a reviewed, tested
+          change in{" "}
+          <a href="#agenthq" className="mark" style={{ "--i": 0 } as React.CSSProperties}>
+            46 seconds for about 3 cents
           </a>
-          , an agent for macOS that{" "}
-          <a href="#auraos" className="mark" style={{ "--i": 1 } as React.CSSProperties}>
-            remembers where you left off
-          </a>
-          , and a secrets manager that{" "}
-          <a href="#vaultik" className="mark" style={{ "--i": 2 } as React.CSSProperties}>
-            served 56,334 requests without a failure
+          , and solved{" "}
+          <a href="#agenthq" className="mark" style={{ "--i": 1 } as React.CSSProperties}>
+            10 of 10 eval tasks on 18% fewer tokens
+          </a>{" "}
+          than one agent working alone. Its Researcher finds code with RepoLens, my{" "}
+          <a href="#repolens" className="mark" style={{ "--i": 2 } as React.CSSProperties}>
+            search tool that says “not found” instead of guessing
           </a>
           .
         </p>

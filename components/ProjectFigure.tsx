@@ -58,18 +58,39 @@ function Dots({ figure }: { figure: Extract<Figure, { type: "dots" }> }) {
   );
 }
 
-function Steps({ figure }: { figure: Extract<Figure, { type: "steps" }> }) {
+function Pairs({ figure }: { figure: Extract<Figure, { type: "pairs" }> }) {
   return (
     <div className="plate">
-      <p className="steps__command">“{figure.command}”</p>
-      <ol className="steps">
-        {figure.steps.map((step) => (
-          <li key={step.text}>
-            <span className="steps__tool">{step.tool}</span>
-            <span>{step.text}</span>
-          </li>
+      <p className="plate__title">{figure.title}</p>
+      <p className="legend">
+        {figure.series.map((name, s) => (
+          <span key={name} className={`legend__item legend__item--${s}`}>
+            {name}
+          </span>
         ))}
-      </ol>
+      </p>
+      {/* Each metric is its own small chart, scaled from zero to the larger of the two values. */}
+      <dl className="pairs">
+        {figure.rows.map((row) => {
+          const max = Math.max(...row.values);
+          return (
+            <div key={row.label} className="pairs__row">
+              <dt>{row.label}</dt>
+              {row.values.map((value, s) => (
+                <dd key={s} className={`pairs__item pairs__item--${s}`} title={`${figure.series[s]}: ${row.format.replace("{}", String(value))}`}>
+                  <span className="pairs__track">
+                    <span className="pairs__bar" style={{ width: `${(value / max) * 100}%` }} />
+                  </span>
+                  <span className="pairs__value">
+                    <span className="sr-only">{figure.series[s]}: </span>
+                    {row.format.replace("{}", String(value))}
+                  </span>
+                </dd>
+              ))}
+            </div>
+          );
+        })}
+      </dl>
     </div>
   );
 }
@@ -77,12 +98,26 @@ function Steps({ figure }: { figure: Extract<Figure, { type: "steps" }> }) {
 export default function ProjectFigure({ figure }: { figure: Figure }) {
   return (
     <figure className="project-figure">
+      {figure.type === "video" && (
+        <video
+          className="screen"
+          src={figure.src}
+          poster={figure.poster}
+          width={figure.width}
+          height={figure.height}
+          controls
+          muted
+          playsInline
+          preload="none"
+          aria-label={figure.label}
+        />
+      )}
       {figure.type === "image" && (
         <Image className="screen" src={figure.src} width={figure.width} height={figure.height} alt={figure.alt} sizes="(max-width: 52rem) 100vw, 40rem" />
       )}
       {figure.type === "bars" && <Bars figure={figure} />}
       {figure.type === "dots" && <Dots figure={figure} />}
-      {figure.type === "steps" && <Steps figure={figure} />}
+      {figure.type === "pairs" && <Pairs figure={figure} />}
       <figcaption className="caption">{figure.caption}</figcaption>
     </figure>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// The AuraOS demo plays muted on a loop, unless the visitor has asked for reduced motion.
+// The AgentHQ demo plays muted on a loop, unless the visitor has asked for reduced motion.
 export default function HeroVideo() {
   const video = useRef<HTMLVideoElement>(null);
 
@@ -18,8 +18,8 @@ export default function HeroVideo() {
       <video
         ref={video}
         className="screen"
-        src="/work/auraos.mp4"
-        poster="/work/auraos.jpg"
+        src="/work/agenthq.mp4"
+        poster="/work/agenthq.jpg"
         width={1600}
         height={900}
         muted
@@ -27,11 +27,11 @@ export default function HeroVideo() {
         playsInline
         controls
         preload="metadata"
-        aria-label="AuraOS demo: the request “continue my auraos project” recalls the last session and opens the workspace"
+        aria-label="AgentHQ demo: four agents take “add rate limiting to /login” to a reviewed, tested change, then wait for sign-off"
       />
       <figcaption className="caption">
-        <a href="#auraos">AuraOS</a>, my macOS agent. “Continue my auraos project” pulls up the last session’s next step and
-        open GitHub issues, then opens the workspace.
+        <a href="#agenthq">AgentHQ</a> on a real run. Four agents plan, research, write and review a change, re-run the
+        tests themselves, then stop and wait for a person to approve the pull request.
       </figcaption>
     </figure>
   );
